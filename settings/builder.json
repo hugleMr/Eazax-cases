@@ -1,0 +1,65 @@
+{
+  "title": "eazax-cases",
+  "packageName": "org.cocos2d.demo",
+  "startScene": "c96a7da9-0270-4350-9dc3-15efc23eb456",
+  "excludeScenes": [
+    "461cd5ee-de1a-49c8-8f60-ea0de42a0000",
+    "ced50de4-5b97-432a-9939-1254afb01463",
+    "155920ae-cb07-4530-92c7-5a6fa5e73625",
+    "98e55cea-f848-41aa-9a16-da5345a36dc2",
+    "30bb722d-f017-4c7b-b050-bd9e43bc6c32",
+    "563dbd94-a9bf-41ab-978f-33568213f045",
+    "13f9e3bb-2525-47c9-a28b-7804ef4b3e86"
+  ],
+  "includeSDKBox": false,
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": true,
+    "upsideDown": false
+  },
+  "webOrientation": "portrait",
+  "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": true,
+  "mergeStartScene": false,
+  "optimizeHotUpdate": false,
+  "md5Cache": true,
+  "encryptJs": false,
+  "xxteaKey": "29ac1eeb-c0d7-4d",
+  "zipCompressJs": true,
+  "fb-instant-games": {},
+  "android": {
+    "REMOTE_SERVER_ROOT": "",
+    "packageName": "com.ifaswind.eazaxcases"
+  },
+  "ios": {
+    "REMOTE_SERVER_ROOT": "",
+    "ios_enable_jit": true,
+    "packageName": "org.cocos2d.demo"
+  },
+  "mac": {
+    "REMOTE_SERVER_ROOT": "",
+    "height": 720,
+    "packageName": "org.cocos2d.demo",
+    "width": 1280
+  },
+  "win32": {
+    "REMOTE_SERVER_ROOT": "",
+    "height": 720,
+    "width": 1280
+  },
+  "android-instant": {
+    "REMOTE_SERVER_ROOT": "",
+    "host": "",
+    "packageName": "org.cocos2d.demo",
+    "pathPattern": "",
+    "recordPath": "",
+    "scheme": "https",
+    "skipRecord": false
+  },
+  "appBundle": false,
+  "mainCompressionType": "default",
+  "mainIsRemote": false,
+  "nativeMd5Cache": true,
+  "agreements": {}
+}
