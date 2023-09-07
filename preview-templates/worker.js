@@ -1,12 +1,12 @@
-// 用于网页在后台时保持引擎持续运行的 Worker 脚本
+// It is used to keep the engine running continuously when web pages are in the background Worker Script
 
-// 调用间隔
+// Call interval
 const interval = 1000 / 60;
 
-// 递归函数
+// recursive function
 function call() {
     postMessage(1);
-    // 直接调用函数会有问题
-    setTimeout('call()', interval);
+    // There is a problem with calling the function directly
+    setTimeout("call()", interval);
 }
 call();

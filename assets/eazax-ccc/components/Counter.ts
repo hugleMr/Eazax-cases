@@ -38,8 +38,8 @@ export default class Counter extends cc.Component {
     protected tweenRes: Function = null;
 
     protected onLoad() {
-        this.init(50, "mmss").to(100, (value: number) => {
-            console.log("value : ", value);
+        this.init(50, "mmss").to(100, () => {
+            console.log("completed!!!");
         });
     }
 
@@ -68,7 +68,7 @@ export default class Counter extends cc.Component {
      */
     public to(
         value: number,
-        callback?: (value: number) => void,
+        callback?: () => void,
         duration?: number
     ): Promise<void> {
         return new Promise<void>((res) => {
@@ -98,7 +98,7 @@ export default class Counter extends cc.Component {
                 )
                 .call(() => {
                     this.tweenRes = null;
-                    callback && callback(this.curValue);
+                    callback && callback();
                     res();
                 })
                 .start();
