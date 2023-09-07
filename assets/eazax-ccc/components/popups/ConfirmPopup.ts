@@ -3,11 +3,10 @@ import PopupBase from "./PopupBase";
 const { ccclass, property } = cc._decorator;
 
 /**
- * 确认弹窗（PopupBase 使用示例）
+ * Confirm the popping window (example of PopupBase)
  */
 @ccclass
 export default class ConfirmPopup extends PopupBase<ConfirmPopupOptions> {
-
     @property(cc.Label)
     private titleLabel: cc.Label = null;
 
@@ -26,16 +25,18 @@ export default class ConfirmPopup extends PopupBase<ConfirmPopupOptions> {
     }
 
     private registerEvent() {
-        this.confirmBtn.on(cc.Node.EventType.TOUCH_END, this.onConfirmBtnClick, this);
+        this.confirmBtn.on(
+            cc.Node.EventType.TOUCH_END,
+            this.onConfirmBtnClick,
+            this
+        );
     }
 
     private unregisterEvent() {
         this.confirmBtn.targetOff(this);
     }
 
-    protected init() {
-
-    }
+    protected init() {}
 
     protected updateDisplay(options: ConfirmPopupOptions): void {
         this.titleLabel.string = options.title;
@@ -46,10 +47,9 @@ export default class ConfirmPopup extends PopupBase<ConfirmPopupOptions> {
         this.options.confirmCallback && this.options.confirmCallback();
         this.hide();
     }
-
 }
 
-/** 确认弹窗选项 */
+/** Confirm the pop -up option */
 export interface ConfirmPopupOptions {
     title: string;
     content: string;

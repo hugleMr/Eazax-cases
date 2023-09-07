@@ -1,25 +1,29 @@
 const { ccclass, property, executionOrder, help, menu } = cc._decorator;
 
 /**
- * 用于在浏览器后台保持运行
- * @author 陈皮皮 (ifaswind)
+ * Keep running in the background of the browser
+ * @author Chenpi (ifaswind)
  * @version 20220207
  * @see RunInBackground.ts https://gitee.com/ifaswind/eazax-ccc/blob/master/components/RunInBackground.ts
  */
 @ccclass
 @executionOrder(-1)
-@help('https://gitee.com/ifaswind/eazax-ccc/blob/master/components/RunInBackground.ts')
-@menu('eazax/其他组件/RunInBackground')
+@help(
+    "https://gitee.com/ifaswind/eazax-ccc/blob/master/components/RunInBackground.ts"
+)
+@menu("eazax/Other components/RunInBackground")
 export default class RunInBackground extends cc.Component {
+    @property({
+        displayName: CC_DEV && "Script address",
+        tooltip: CC_DEV && "Worker Script address",
+    })
+    private url: string = "/worker.js";
 
-    @property({ displayName: CC_DEV && '脚本地址', tooltip: CC_DEV && 'Worker 脚本地址' })
-    private url: string = '/worker.js';
-
-    /** Worker 实例 */
+    /** Worker Instance */
     private worker: Worker = null;
 
     /**
-     * 生命周期：加载
+     * Life cycle: load
      */
     protected onLoad() {
         this.init();
@@ -27,69 +31,71 @@ export default class RunInBackground extends cc.Component {
     }
 
     /**
-     * 生命周期：销毁
+     * Life cycle: destruction
      */
     protected onDestroy() {
         this.unregisterEvent();
     }
 
     /**
-     * 注册事件
+     * Registration issue
      */
     protected registerEvent() {
         this.onVisibilityChange = this.onVisibilityChange.bind(this);
-        document.addEventListener('visibilitychange', this.onVisibilityChange);
+        document.addEventListener("visibilitychange", this.onVisibilityChange);
     }
 
     /**
-     * 反注册事件
+     * Anti -registration
      */
     protected unregisterEvent() {
-        document.removeEventListener('visibilitychange', this.onVisibilityChange);
+        document.removeEventListener(
+            "visibilitychange",
+            this.onVisibilityChange
+        );
     }
 
     /**
-     * 初始化
+     * initialization
      */
     private init() {
-        // 网页调试需要在预览模板目录下放一份 worker.js
-        // 如果使用编辑器自带的预览模板，还需要修改脚本地址
+        // The webpage debug needs to place a part of worker.js in the preview template directory
+        // If you use the preview template that comes with the editor, you need to modify the script address
         // if (CC_DEBUG) {
         //     this.url = '/app/editor/static/preview-templates/worker.js';
         // }
     }
 
     /**
-     * 页面切换回调
+     * Page switchback
      */
     private onVisibilityChange() {
-        // 切换到后台
-        if (document.visibilityState === 'hidden') {
-            // 确保引擎处于运行状态
+        // Switch to the background
+        if (document.visibilityState === "hidden") {
+            // Make sure the engine is in running state
             if (cc.game.isPaused()) {
                 cc.game.resume();
             }
-            // 创建工作线程
+            // Create a working thread
             this.worker = new Worker(this.url);
             this.worker.onmessage = () => {
-                // 调用 Cocos 引擎主循环
-                cc.director['mainLoop']();
-            }
+                // CICOS engine main loop
+                cc.director["mainLoop"]();
+            };
         }
-        // 切换到前台
-        else if (document.visibilityState === 'visible') {
+        // Switch to the front desk
+        else if (document.visibilityState === "visible") {
             if (this.worker) {
                 this.worker.terminate();
                 this.worker = null;
             }
         }
     }
-
 }
 
 /*
 
-以下为 worker.js 脚本内容：
+The following is worker.js script content:
 
 function call(){
     postMessage(1);

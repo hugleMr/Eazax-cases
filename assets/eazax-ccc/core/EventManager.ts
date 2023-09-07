@@ -1,30 +1,35 @@
 /**
- * 事件管理器
+ * Event manager
  * @see EventManager.ts https://gitee.com/ifaswind/eazax-ccc/blob/master/core/EventManager.ts
  * @version 20210421
  * @example
- * // 注册事件
+ * // Registration issue
  * EventManager.on('game-start', this.onGameStart, this);
- * // 发射事件
+ * // Launch
  * EventManager.emit('game-start', 666);
  */
 export default class EventManager {
-
     /**
-     * 普通事件容器
+     * Ordinary event container
      */
-    private static events: Map<string, Subscription[]> = new Map<string, Subscription[]>();
+    private static events: Map<string, Subscription[]> = new Map<
+        string,
+        Subscription[]
+    >();
 
     /**
-     * 一次性事件容器
+     * One -time event container
      */
-    private static onceEvents: Map<string, Subscription[]> = new Map<string, Subscription[]>();
+    private static onceEvents: Map<string, Subscription[]> = new Map<
+        string,
+        Subscription[]
+    >();
 
     /**
-     * 注册事件
-     * @param name 事件名
-     * @param callback 回调
-     * @param target 目标
+     * Registration issue
+     * @param name event name
+     * @param callback
+     * @param target target
      */
     public static on(name: string, callback: Function, target?: any) {
         const events = this.events;
@@ -36,10 +41,10 @@ export default class EventManager {
     }
 
     /**
-     * 注册事件（一次性）
-     * @param name 事件名
-     * @param callback 回调
-     * @param target 目标
+     * Registration event (one -time)
+     * @param name event name
+     * @param callback
+     * @param target target
      */
     public static once(name: string, callback: Function, target?: any) {
         const events = this.onceEvents;
@@ -51,13 +56,13 @@ export default class EventManager {
     }
 
     /**
-     * 取消注册事件
-     * @param name 事件名
-     * @param callback 回调
-     * @param target 目标
+     * Cancel registration event
+     * @param name event name
+     * @param callback
+     * @param target target
      */
     public static off(name: string, callback: Function, target?: any) {
-        // 普通事件
+        // Ordinary incident
         const event = this.events.get(name);
         if (event) {
             for (let i = 0, l = event.length; i < l; i++) {
@@ -70,7 +75,7 @@ export default class EventManager {
                 }
             }
         }
-        // 一次性事件
+        // One -time event
         const onceEvent = this.onceEvents.get(name);
         if (onceEvent) {
             for (let i = 0, l = onceEvent.length; i < l; i++) {
@@ -86,12 +91,12 @@ export default class EventManager {
     }
 
     /**
-     * 通过事件名发送事件
-     * @param name 事件名
-     * @param args 参数
+     * Send an event through the event name
+     * @param name event name
+     * @param ARGS parameters
      */
     public static emit(name: string, ...args: any[]) {
-        // 普通事件
+        // Ordinary incident
         const event = this.events.get(name);
         if (event) {
             for (let i = 0; i < event.length; i++) {
@@ -99,7 +104,7 @@ export default class EventManager {
                 callback.apply(target, args);
             }
         }
-        // 一次性事件
+        // One -time event
         const onceEvent = this.onceEvents.get(name);
         if (onceEvent) {
             for (let i = 0; i < onceEvent.length; i++) {
@@ -111,47 +116,54 @@ export default class EventManager {
     }
 
     /**
-     * 移除指定事件
-     * @param name 事件名
+     * Remove the specified event
+     * @param name event name
      */
     public static remove(name: string) {
-        // 普通事件
+        // Ordinary incident
         if (this.events.has(name)) {
             this.events.delete(name);
         }
-        // 一次性事件
+        // One -time event
         if (this.onceEvents.has(name)) {
             this.onceEvents.delete(name);
         }
     }
 
     /**
-     * 移除所有事件
+     * Remove all events
      */
     public static removeAll() {
-        // 普通事件
+        // Ordinary incident
         this.events.clear();
-        // 一次性事件
+        // One -time event
         this.onceEvents.clear();
     }
 
     /**
-     * 对比
-     * @param subscription 订阅
-     * @param inCallback 回调
-     * @param inTarget 目标
+     * Compared
+     * @param Subscripting subscription
+     * @paramincallback
+     * @param Intarget target
      */
-    private static compare(subscription: Subscription, inCallback: Function, inTarget: any) {
+    private static compare(
+        subscription: Subscription,
+        inCallback: Function,
+        inTarget: any
+    ) {
         const { callback, target } = subscription;
-        return target === inTarget && (callback === inCallback || callback.toString() === inCallback.toString());
+        return (
+            target === inTarget &&
+            (callback === inCallback ||
+                callback.toString() === inCallback.toString())
+        );
     }
-
 }
 
-/** 订阅 */
+/** subscription */
 interface Subscription {
-    /** 回调 */
+    /** Call back */
     callback: Function;
-    /** 目标 */
+    /** Targetrget */
     target: any;
 }

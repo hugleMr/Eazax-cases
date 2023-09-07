@@ -1,34 +1,26 @@
 const { ccclass, property, requireComponent } = cc._decorator;
 
 /**
- * 数字滚动（cc.Label）
+ * Digital scrolling (cc.Label）
  * @see Counter.ts https://gitee.com/ifaswind/eazax-ccc/blob/master/components/Counter.ts
  * @version 20210521
  */
 @ccclass
 @requireComponent(cc.Label)
 export default class Counter extends cc.Component {
-
-    @property(cc.Label)
-    public label: cc.Label = null;
-
-    @property({ tooltip: CC_DEV && '动画时长' })
-    public duration: number = 0.5;
-
-    @property({ tooltip: CC_DEV && '保持数值为整数' })
-    public keepInteger: boolean = true;
-
     protected actualValue: number = 0;
 
+    private format: string = "";
+    private get label() {
+        return this.getComponent(cc.Label);
+    }
     public get value() {
         return this.actualValue;
     }
 
     public set value(value: number) {
-        if (this.keepInteger) {
-            value = Math.floor(value);
-        }
-        this.curValue = (this.actualValue = value);
+        value = Math.floor(value);
+        this.curValue = this.actualValue = value;
     }
 
     protected _curValue: number = 0;
@@ -38,71 +30,75 @@ export default class Counter extends cc.Component {
     }
 
     public set curValue(value: number) {
-        if (this.keepInteger) {
-            value = Math.floor(value);
-        }
+        value = Math.floor(value);
         this._curValue = value;
-        this.label.string = value.toString();
+        this.label.string = this.formatTime(value, this.format);
     }
 
     protected tweenRes: Function = null;
 
     protected onLoad() {
-        this.init();
+        this.init(50, "mmss").to(100, (value: number) => {
+            console.log("value : ", value);
+        });
     }
 
     /**
-     * 初始化
+     * initialization
      */
-    protected init() {
-        if (!this.label) {
-            this.label = this.getComponent(cc.Label);
-        }
-        this.value = 0;
+    public init(startValue: number, format?: string) {
+        this.value = startValue;
+        if (format) this.format = format;
+        return this;
     }
 
     /**
-     * 设置数值
-     * @param value 数值
+     * Set the value
+     * @param value
      */
     public set(value: number) {
         this.value = value;
     }
 
     /**
-     * 设置动画时长
-     * @param duration 动画时长
+     * Rolling value
+     * @param value target value
+     * @param duration animation time
+     * @param callback completes the callback
      */
-    public setDuration(duration: number) {
-        this.duration = duration;
-    }
-
-    /**
-     * 滚动数值
-     * @param value 目标值
-     * @param duration 动画时长
-     * @param callback 完成回调
-     */
-    public to(value: number, duration?: number, callback?: () => void): Promise<void> {
-        return new Promise<void>(res => {
-            // 停止当前动画
+    public to(
+        value: number,
+        callback?: (value: number) => void,
+        duration?: number
+    ): Promise<void> {
+        return new Promise<void>((res) => {
+            // Stop the current animation
             if (this.tweenRes) {
                 cc.Tween.stopAllByTarget(this);
                 this.tweenRes();
             }
             this.tweenRes = res;
-            // 保存实际值
+            // Save the actual value
             this.actualValue = value;
-            // 动画时长
+            // Animation time
             if (duration == undefined) {
-                duration = this.duration;
+                duration = Math.abs(this.actualValue - this.curValue);
             }
+            console.log("duration : ", duration);
             // GO
             cc.tween<Counter>(this)
-                .to(duration, { curValue: value })
+                .to(
+                    duration,
+                    { curValue: value }
+                    // {
+                    //     onUpdate: () => {
+                    //         console.log("this.curValue : ", this.curValue);
+                    //     },
+                    // }
+                )
                 .call(() => {
                     this.tweenRes = null;
-                    callback && callback();
+                    callback && callback(this.curValue);
                     res();
                 })
                 .start();
@@ -110,14 +106,49 @@ export default class Counter extends cc.Component {
     }
 
     /**
-     * 相对滚动数值
-     * @param diff 差值
-     * @param duration 动画时长
-     * @param callback 完成回调
+     * Relatively rolling value
+     * @param diff Difference
+     * @param duration Animation time
+     * @param callback Complete the callback
      */
-    public by(diff: number, duration?: number, callback?: () => void): Promise<void> {
+    public by(
+        diff: number,
+        callback?: () => void,
+        duration?: number
+    ): Promise<void> {
         const value = this.actualValue + diff;
-        return this.to(value, duration, callback);
+        return this.to(value, callback, duration);
     }
 
+    private formatTime(duration: number, format: string) {
+        let seconds = Math.floor(duration % 60),
+            minutes = Math.floor((duration / 60) % 60),
+            hours = Math.floor((duration / (60 * 60)) % 24),
+            days = Math.floor(duration / (60 * 60) / 24);
+        let _days = days < 10 ? "0" + days : days;
+        let _hours = hours < 10 ? "0" + hours : hours;
+        let _minutes = minutes < 10 ? "0" + minutes : minutes;
+        let _seconds = seconds < 10 ? "0" + seconds : seconds;
+        switch (format) {
+            case "ddhhmmss":
+                if (days > 0) {
+                    return _days + "d:" + _hours + "h:" + _minutes + "m";
+                }
+                return _hours + "h:" + _minutes + "m:" + _seconds + "s";
+            case "hhmmss":
+                if (hours <= 0) {
+                    return `${_minutes} : ${_seconds}`;
+                }
+                return `${_hours}:${_minutes}:${_seconds}`;
+            case "mmss":
+                if (minutes <= 0) {
+                    return `${_seconds}`;
+                }
+                return `${_minutes}:${_seconds}`;
+            case "ss":
+                return `${_seconds}`;
+            default:
+                return `${duration}`;
+        }
+    }
 }

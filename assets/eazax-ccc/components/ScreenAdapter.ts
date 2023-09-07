@@ -3,78 +3,79 @@ import EventManager from "../core/EventManager";
 const { ccclass, executionOrder, help, menu } = cc._decorator;
 
 /**
- * 屏幕适配组件
- * @author 陈皮皮 (ifaswind)
+ * Screen adaptation component
+ * @author Chenpi (ifaswind)
  * @version 20210504
  * @see ScreenAdapter.ts https://gitee.com/ifaswind/eazax-ccc/blob/master/components/ScreenAdapter.ts
  */
 @ccclass
 @executionOrder(-1)
-@help('https://gitee.com/ifaswind/eazax-ccc/blob/master/components/ScreenAdapter.ts')
-@menu('eazax/其他组件/ScreenAdapter')
+@help(
+    "https://gitee.com/ifaswind/eazax-ccc/blob/master/components/ScreenAdapter.ts"
+)
+@menu("eazax/Other components/ScreenAdapter")
 export default class ScreenAdapter extends cc.Component {
-
     /**
-     * 生命周期：加载
+     * Life cycle: load
      */
     protected onLoad() {
         this.init();
     }
 
     /**
-     * 生命周期：组件启用
+     * Life cycle: component enabled
      */
     protected onEnable() {
         this.adapt();
     }
 
     /**
-     * 初始化
+     * initialization
      */
     protected init() {
-        // 设置游戏窗口变化的回调（仅 Web 平台有效）
+        // Set the callback of changes in the game window (only the web platform is valid)
         cc.view.setResizeCallback(() => this.onResize());
     }
 
     /**
-     * 窗口变化回调
+     * Window change callback
      */
     protected onResize() {
-        // 由于 setResizeCallback 只能设置一个回调
-        // 使用事件系统发送一个特定事件，让其他组件也可以监听到窗口变化
-        EventManager.emit('view-resize');
-        // 适配
+        // Because SetResizeCallBack can only set up a callbackback
+        // Use the event system to send a specific event, so that other components can also monitor the window change
+        EventManager.emit("view-resize");
+        // adaptation
         this.adapt();
     }
 
     /**
-     * 适配
+     * adaptation
      */
     protected adapt() {
-        // 实际屏幕比例
+        // Actual screen ratio
         const winSize = cc.winSize,
             screenRatio = winSize.width / winSize.height;
-        // 设计比例
+        // Design ratio
         const designResolution = cc.Canvas.instance.designResolution,
             designRatio = designResolution.width / designResolution.height;
-        // 判断实际屏幕宽高比
+        // Determine the actual screen width and height ratio
         if (screenRatio <= 1) {
-            // 此时屏幕高度大于宽度
+            // At this time, the screen height is greater than width
             if (screenRatio <= designRatio) {
                 this.setFitWidth();
             } else {
-                // 此时实际屏幕比例大于设计比例
-                // 为了保证纵向的游戏内容不受影响，应使用 fitHeight 模式
+                // At this time, the actual screen ratio is greater than the design ratio
+                // In order to ensure that the content of the vertical game is not affected, the Fitheight mode should be used
                 this.setFitHeight();
             }
         } else {
-            // 此时屏幕高度小于宽度
+            // At this time, the screen height is less than width
             this.setFitHeight();
         }
     }
 
     /**
-     * 适配高度模式
+     * Adaptation high mode
      */
     protected setFitHeight() {
         const canvas = cc.Canvas.instance;
@@ -83,12 +84,11 @@ export default class ScreenAdapter extends cc.Component {
     }
 
     /**
-     * 适配宽度模式
+     * Adaptive width mode
      */
     protected setFitWidth() {
         const canvas = cc.Canvas.instance;
         canvas.fitHeight = false;
         canvas.fitWidth = true;
     }
-
 }
